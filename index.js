@@ -53,12 +53,21 @@ app.get('/api/puanlar', (req, res) => {
   try {
     const puanlarHam = require('./puanlar.json');
     // Sadece gerçek puan satırlarını al, başlıkları atla
-    const puanlar = puanlarHam
+    let puanlar = puanlarHam
       .filter(item => /^\d+$/.test(item["21 nisan 06 mayıs harcama ve puan"]))
       .map(item => ({
         id: item["21 nisan 06 mayıs harcama ve puan"],
         puan: item["__EMPTY"]
       }));
+
+    // Puanları sayıya çevirip büyükten küçüğe sırala
+    puanlar = puanlar.sort((a, b) => {
+      // "1.116,50 ₺" -> 1116.50
+      const numA = parseFloat(a.puan.replace(/\./g, '').replace(',', '.').replace(/[^\d.]/g, ''));
+      const numB = parseFloat(b.puan.replace(/\./g, '').replace(',', '.').replace(/[^\d.]/g, ''));
+      return numB - numA;
+    });
+
     res.json(puanlar);
   } catch (err) {
     res.status(500).json({ error: 'puanlar.json okunamadı', details: err.message });
