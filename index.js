@@ -51,7 +51,14 @@ app.get('/', (req, res) => {
 
 app.get('/api/puanlar', (req, res) => {
   try {
-    const puanlar = require('./puanlar.json');
+    const puanlarHam = require('./puanlar.json');
+    // Sadece gerçek puan satırlarını al, başlıkları atla
+    const puanlar = puanlarHam
+      .filter(item => /^\d+$/.test(item["21 nisan 06 mayıs harcama ve puan"]))
+      .map(item => ({
+        id: item["21 nisan 06 mayıs harcama ve puan"],
+        puan: item["__EMPTY"]
+      }));
     res.json(puanlar);
   } catch (err) {
     res.status(500).json({ error: 'puanlar.json okunamadı', details: err.message });
