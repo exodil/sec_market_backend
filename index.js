@@ -55,20 +55,31 @@ app.get('/api/puanlar', (req, res) => {
     // Sadece gerçek puan satırlarını al, başlıkları atla
     let puanlar = puanlarHam
       .filter(item => /^\d+$/.test(item["21 nisan 06 mayıs harcama ve puan"]))
-      .map(item => ({
-        id: item["21 nisan 06 mayıs harcama ve puan"],
-        puan: item["__EMPTY"]
-      }));
+      .map(item => {
+        // Puanı sayıya çevir
+        let puanStr = (item["__EMPTY"] || "").toString();
+        // "1.116,50 ₺" -> "1116.50"
+        let puanNum = parseFloat(
+          puanStr
+            .replace(/\s/g, '')      // boşlukları sil
+            .replace('₺', '')        // ₺ işaretini sil
+            .replace(/\./g, '')      // binlik noktaları sil
+            .replace(',', '.')       // virgülü noktaya çevir
+        );
+        // Eğer sayı değilse 0 yap
+        if (isNaN(puanNum)) puanNum = 0;
+        return {
+          id: item["21 nisan 06 mayıs harcama ve puan"],
+          puan: puanStr,
+          puanNum
+        };
+      });
 
-    // Puanları sayıya çevirip büyükten küçüğe sırala
-    puanlar = puanlar.sort((a, b) => {
-      // "1.116,50 ₺" -> 1116.50
-      const numA = parseFloat(a.puan.replace(/\./g, '').replace(',', '.').replace(/[^\d.]/g, ''));
-      const numB = parseFloat(b.puan.replace(/\./g, '').replace(',', '.').replace(/[^\d.]/g, ''));
-      return numB - numA;
-    });
+    // Büyükten küçüğe sırala
+    puanlar = puanlar.sort((a, b) => b.puanNum - a.puanNum);
 
-    res.json(puanlar);
+    // Sadece id ve puan stringini döndür
+    res.json(puanlar.map(({id, puan}) => ({id, puan})));
   } catch (err) {
     res.status(500).json({ error: 'puanlar.json okunamadı', details: err.message });
   }
