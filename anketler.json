@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1746965708480,
+    "soru": "Bayramda burada olacak mısınız?",
+    "secenekler": [
+      {
+        "text": "Evet",
+        "oy": 1
+      },
+      {
+        "text": "Hayır",
+        "oy": 0
+      }
+    ],
+    "tarih": "2025-05-11T12:15:08.480Z"
+  }
+]
