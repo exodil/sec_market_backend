@@ -51,18 +51,10 @@ app.get('/', (req, res) => {
 
 app.get('/api/puanlar', (req, res) => {
   try {
-    const filePath = path.join('C:/Users/manas/OneDrive/Masaüstü/puanlar.xlsx');
-    const workbook = xlsx.readFile(filePath);
-    const sheet = workbook.Sheets[workbook.SheetNames[0]];
-    const data = xlsx.utils.sheet_to_json(sheet, { header: 1 });
-    // 4. satırdan (index 3) başla, ilk 15 satırı al
-    const sliced = data.slice(3, 18).map(row => ({
-      id: row[0],
-      puan: row[1]
-    }));
-    res.json(sliced);
+    const puanlar = require('./puanlar.json');
+    res.json(puanlar);
   } catch (err) {
-    res.status(500).json({ error: 'Excel dosyası okunamadı', details: err.message });
+    res.status(500).json({ error: 'puanlar.json okunamadı', details: err.message });
   }
 });
 
