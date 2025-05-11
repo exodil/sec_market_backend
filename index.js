@@ -144,10 +144,6 @@ app.post('/api/indirimler', (req, res) => {
     res.status(500).json({ error: 'İndirimli ürün eklenemedi', details: err.message });
   }
 });
-app.get('/api/puanlar', (req, res) => {
-  const puanlar = require('./puanlar.json');
-  res.json(puanlar);
-});
 // Anketleri oku
 app.get('/api/anketler', (req, res) => {
   try {
